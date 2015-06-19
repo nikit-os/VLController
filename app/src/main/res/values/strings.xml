@@ -3,4 +3,11 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="pref_ip_address_key">pref_ip_address_key</string>
+    <string name="pref_ip_address_title">IP address</string>
+    <string name="pref_port_key">pref_port_key</string>
+    <string name="pref_port_title">Port</string>
+    <string name="pref_password_key">pref_password_key</string>
+    <string name="pref_password_title">Password</string>
 </resources>
