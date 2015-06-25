@@ -15,9 +15,9 @@ import android.view.ViewGroup;
  */
 public class SettingsActivityFragment extends PreferenceFragment {
 
-    private static final String IP_ADDRESS_KEY = "pref_ip_address_key";
-    private static final String PORT_KEY = "pref_port_key";
-    private static final String PASSWORD_KEY = "pref_password_key";
+    public static final String IP_ADDRESS_KEY = "pref_ip_address_key";
+    public static final String PORT_KEY = "pref_port_key";
+    public static final String PASSWORD_KEY = "pref_password_key";
 
 
 

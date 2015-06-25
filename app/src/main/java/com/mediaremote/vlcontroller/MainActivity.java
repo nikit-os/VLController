@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends Activity {
+    public static final String TAG = MainActivity.class.toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,9 @@ public class MainActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        } else if (id == R.id.action_find_vlc) {
+            startActivity(new Intent(this, VlcServersListActivity.class));
             return true;
         }
 
