@@ -68,6 +68,9 @@ public class MainActivity extends Activity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        } else if (id == R.id.action_find_vlc) {
+            startActivity(new Intent(this, VlcServersListActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
