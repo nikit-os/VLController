@@ -4,29 +4,20 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+
 
 
 public class MainActivity extends Activity {
@@ -44,7 +35,9 @@ public class MainActivity extends Activity {
     private Status status;
     private PendingIntent pendingIntent;
     private Intent intent;
-    private Intent temp = new Intent();
+    private Intent intentForPending = new Intent();
+    public static final String URL_REQUEST ="URL";
+    public static final String PENDING_INTENT ="PI";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +48,10 @@ public class MainActivity extends Activity {
         btnStop = (Button) findViewById(R.id.stop);
         btnVolumeDown = (Button) findViewById(R.id.volume_down);
         btnVolumeUp = (Button) findViewById(R.id.volume_up);
-        pendingIntent = createPendingResult(1, temp, 0);
+        pendingIntent = createPendingResult(1, intentForPending, 0);
         intent = new Intent(this, StatusService.class)
-                .putExtra("URL", "http://10.42.0.1:8080/requests/status.json")
-                .putExtra("PI", pendingIntent);
+                .putExtra(URL_REQUEST, "http://10.42.0.1:8080/requests/status.json")
+                .putExtra(PENDING_INTENT, pendingIntent);
         requestQueue = Volley.newRequestQueue(this);
         startService(intent);
 
@@ -197,6 +190,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         status = Status.getInstance();
         Log.d(TAG, status.getArtist());
 

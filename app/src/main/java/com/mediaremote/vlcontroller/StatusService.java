@@ -52,8 +52,8 @@ public class StatusService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
-        urlRequest = intent.getStringExtra("URL");
-        pendingIntent = intent.getParcelableExtra("PI");
+        urlRequest = intent.getStringExtra(MainActivity.URL_REQUEST);
+        pendingIntent = intent.getParcelableExtra(MainActivity.PENDING_INTENT);
         statusUpdate();
         return super.onStartCommand(intent, flags, startId);
     }
