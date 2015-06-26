@@ -1,8 +1,11 @@
 package com.mediaremote.vlcontroller;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.toString();
@@ -33,7 +41,10 @@ public class MainActivity extends Activity {
     private Button btnStop;
     private Button btnVolumeUp;
     private Button btnVolumeDown;
-    public Status status = new Status();
+    private Status status;
+    private PendingIntent pendingIntent;
+    private Intent intent;
+    private Intent temp = new Intent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +55,12 @@ public class MainActivity extends Activity {
         btnStop = (Button) findViewById(R.id.stop);
         btnVolumeDown = (Button) findViewById(R.id.volume_down);
         btnVolumeUp = (Button) findViewById(R.id.volume_up);
+        pendingIntent = createPendingResult(1, temp, 0);
+        intent = new Intent(this, StatusService.class)
+                .putExtra("URL", "http://10.42.0.1:8080/requests/status.json")
+                .putExtra("PI", pendingIntent);
         requestQueue = Volley.newRequestQueue(this);
-        getStatusInfo();
-
+        startService(intent);
 
     }
 
@@ -76,44 +90,12 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getStatusInfo() {
-        final String URL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json";
-
-        VlcRequest vlcRequest = new VlcRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-                try {
-                    status.setState(response.getString("state"));
-                    status.setVolume(response.getInt("volume"));
-                    status.setTime(response.getInt("time"));
-                    status.setLength(response.getInt("length"));
-                    status.setArtist(response.getJSONObject("information").getJSONObject("category").getJSONObject("meta").getString("artist"));
-                    status.setFilename(response.getJSONObject("information").getJSONObject("category").getJSONObject("meta").getString("filename"));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.toString());
-
-            }
-        });
-
-        vlcRequest.setUsernameAndPassword("", "123");
-        requestQueue.add(vlcRequest);
-    }
 
     public void playPause(View view) {
-        textView.setText(status.getState());
+
         final String urlPlay = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_forceresume";
         final String urlPause = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_forcepause";
 
-        getStatusInfo();
         VlcRequest vlcRequest = null;
 
         if (status.getState().equals("paused")) {
@@ -150,12 +132,12 @@ public class MainActivity extends Activity {
         requestQueue.add(vlcRequest);
 
     }
-    public void Stop (View view){
+
+    public void Stop(View view) {
         final String urlStop = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_stop";
 
-        getStatusInfo();
         VlcRequest vlcRequest = null;
-        vlcRequest = new VlcRequest(Request.Method.GET, urlStop, null, new Response.Listener<JSONObject>(){
+        vlcRequest = new VlcRequest(Request.Method.GET, urlStop, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -169,14 +151,14 @@ public class MainActivity extends Activity {
         });
         vlcRequest.setUsernameAndPassword("", "123");
         requestQueue.add(vlcRequest);
+        stopService(new Intent(this, StatusService.class));
     }
 
-    public void VolumeUp (View view){
+    public void VolumeUp(View view) {
         final String volumeUpURL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=volume&val=+5";
 
-        getStatusInfo();
         VlcRequest vlcRequest = null;
-        vlcRequest = new VlcRequest(Request.Method.GET, volumeUpURL, null, new Response.Listener<JSONObject>(){
+        vlcRequest = new VlcRequest(Request.Method.GET, volumeUpURL, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -191,12 +173,12 @@ public class MainActivity extends Activity {
         vlcRequest.setUsernameAndPassword("", "123");
         requestQueue.add(vlcRequest);
     }
-    public void VolumeDown (View view){
+
+    public void VolumeDown(View view) {
         final String volumeDownURL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=volume&val=-5";
 
-        getStatusInfo();
         VlcRequest vlcRequest = null;
-        vlcRequest = new VlcRequest(Request.Method.GET, volumeDownURL, null, new Response.Listener<JSONObject>(){
+        vlcRequest = new VlcRequest(Request.Method.GET, volumeDownURL, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -210,5 +192,13 @@ public class MainActivity extends Activity {
         });
         vlcRequest.setUsernameAndPassword("", "123");
         requestQueue.add(vlcRequest);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        status = Status.getInstance();
+        Log.d(TAG, status.getArtist());
+
     }
 }

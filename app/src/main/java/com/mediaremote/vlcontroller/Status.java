@@ -3,7 +3,11 @@ package com.mediaremote.vlcontroller;
 /**
  * Created by neon on 23.06.15.
  */
+
 public class Status {
+
+    private static Status instance =new Status();
+
     private String state = "";
     private int volume = 0;
     private String artist = "";
@@ -11,8 +15,11 @@ public class Status {
     private int length = 0;
     private int time = 0;
 
-    public Status() {
+    private Status() {
+    }
 
+    public static Status getInstance(){
+        return instance;
     }
 
     public String getState() {return state; }

@@ -9,4 +9,6 @@
     <string name="pref_password_title">Password</string>
     <string name="action_find_vlc">Find VLC</string>
     <string name="title_activity_vlc_servers_list">VlcServersListActivity</string>
+    <string name="status_service">MyService</string>
+    <string name="pending_intent">PARAM_PINTENT</string>
 </resources>

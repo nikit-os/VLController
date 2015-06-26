@@ -37,6 +37,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mediaremote.vlcontroller.MainActivity" />
         </activity>
+        <service
+            android:name=".StatusService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 
