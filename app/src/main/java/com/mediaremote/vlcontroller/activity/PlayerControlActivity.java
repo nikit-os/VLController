@@ -29,8 +29,8 @@ import org.json.JSONObject;
 public class PlayerControlActivity extends Activity {
     private static final String TAG = PlayerControlActivity.class.toString();
 
-    public final static String IP_ADDRESS = "10.42.0.1";
-    public final static String PORT = "8080";
+    public  static String IP_ADDRESS;
+    public  static String PORT;
 
     private RequestQueue requestQueue;
     private Button btnPlayPause;
@@ -53,6 +53,11 @@ public class PlayerControlActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String ipAndPort = getIntent().getStringExtra(FavoritesActivity.SERVER_DATA_URI);
+        IP_ADDRESS = ipAndPort.split(":")[0];
+        PORT = ipAndPort.split(":")[1];
+
         btnPlayPause = (Button) findViewById(R.id.play_pause);
         btnStop = (Button) findViewById(R.id.stop);
         btnVolumeDown = (Button) findViewById(R.id.volume_down);
@@ -74,7 +79,7 @@ public class PlayerControlActivity extends Activity {
         registerReceiver(broadcastReceiver, intentFilter);
 
         intent = new Intent(this, StatusService.class)
-                .putExtra(URL_REQUEST, "http://10.42.0.1:8080/requests/status.json")
+                .putExtra(URL_REQUEST, "http://" + IP_ADDRESS + ":" + PORT +"/requests/status.json")
                 .putExtra(PARAM_TASK, TASK1);
 
         requestQueue = Volley.newRequestQueue(this);

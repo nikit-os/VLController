@@ -11,4 +11,6 @@
     <string name="title_activity_vlc_servers_list">VlcServersListActivity</string>
     <string name="status_service">MyService</string>
     <string name="pending_intent">PARAM_PINTENT</string>
+    <string name="title_activity_favorites">FavoritesActivity</string>
+    <string name="empty_list">Empty list</string>
 </resources>

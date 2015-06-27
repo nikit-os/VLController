@@ -18,7 +18,9 @@ import android.widget.Toast;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.mediaremote.vlcontroller.R;
+import com.mediaremote.vlcontroller.db.VlcServersDataSource;
 import com.mediaremote.vlcontroller.fragment.SettingsActivityFragment;
+import com.mediaremote.vlcontroller.model.VlcServer;
 import com.mediaremote.vlcontroller.util.NetUtils;
 
 import java.io.IOException;
@@ -33,10 +35,11 @@ import java.util.List;
 public class VlcServersListActivity extends ListActivity {
     public static final String TAG = FindVlcServerAsyncTask.class.toString();
 
-    private static int PORT;
+    private static int port;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayAdapter<String> adapter;
+    private VlcServersDataSource datasource;
 
     private Handler findVlcHandler = new Handler(new Handler.Callback() {
         @Override
@@ -53,8 +56,10 @@ public class VlcServersListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(this, item + " choose", Toast.LENGTH_LONG).show();
+        String serverIpAddress = (String) getListAdapter().getItem(position);
+        datasource.open();
+        datasource.saveVlcServer(new VlcServer(serverIpAddress, "123", serverIpAddress, port));
+        datasource.close();
     }
 
     @Override
@@ -63,8 +68,10 @@ public class VlcServersListActivity extends ListActivity {
 
         setContentView(R.layout.activity_vlc_servers_list);
 
+        datasource = new VlcServersDataSource(this);
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        PORT = Integer.parseInt(sharedPref.getString(SettingsActivityFragment.PORT_KEY, "8080"));
+        port = Integer.parseInt(sharedPref.getString(SettingsActivityFragment.PORT_KEY, "8080"));
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
         adapter = new ArrayAdapter<String>(this,
@@ -86,8 +93,7 @@ public class VlcServersListActivity extends ListActivity {
         });
         }
 
-
-        public class CheckServerAvailable implements Runnable {
+    public class CheckServerAvailable implements Runnable {
         InetAddress address;
         int port;
 
@@ -134,7 +140,7 @@ public class VlcServersListActivity extends ListActivity {
             Thread[] workers = new Thread[inetAddressList.size()];
 
             for (int i = 0; i < inetAddressList.size(); i++) {
-                workers[i] = new Thread(new CheckServerAvailable(inetAddressList.get(i), PORT));
+                workers[i] = new Thread(new CheckServerAvailable(inetAddressList.get(i), port));
                 workers[i].setPriority(Thread.MIN_PRIORITY);
             }
 

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/icon"
@@ -15,10 +16,17 @@
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="@+id/label"/>
+
+    <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/plus_circle"-->
+        <!--android:background="@null"-->
+        <!--android:onClick="addServerToDb"/>-->
 
 </LinearLayout>
 
