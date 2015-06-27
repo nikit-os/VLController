@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * Created by neon on 26.06.15.
  */
 public class StatusService extends Service {
-    private PendingIntent pendingIntent;
+
     private boolean isRunning = true;
     private RequestQueue requestQueue;
     private Status status = null;
@@ -53,12 +53,14 @@ public class StatusService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
         urlRequest = intent.getStringExtra(MainActivity.URL_REQUEST);
-        pendingIntent = intent.getParcelableExtra(MainActivity.PENDING_INTENT);
         statusUpdate();
         return super.onStartCommand(intent, flags, startId);
     }
 
     public void statusUpdate() {
+        final Intent intent = new Intent(MainActivity.BROADCAST_ACTION);
+        intent.putExtra(MainActivity.PARAM_TASK, 1);
+
         final VlcRequest vlcRequest = new VlcRequest(Request.Method.GET, urlRequest, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -89,11 +91,7 @@ public class StatusService extends Service {
             public void run() {
                 while (isRunning) {
                     requestQueue.add(vlcRequest);
-                    try {
-                        pendingIntent.send();
-                    } catch (PendingIntent.CanceledException e) {
-                        e.printStackTrace();
-                    }
+                    sendBroadcast(intent);
                     try {
                         TimeUnit.SECONDS.sleep(1);
                     } catch (InterruptedException e) {

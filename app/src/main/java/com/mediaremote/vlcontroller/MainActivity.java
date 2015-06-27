@@ -2,7 +2,10 @@ package com.mediaremote.vlcontroller;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,14 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONObject;
-
-
 
 
 public class MainActivity extends Activity {
@@ -33,11 +36,14 @@ public class MainActivity extends Activity {
     private Button btnVolumeUp;
     private Button btnVolumeDown;
     private Status status;
-    private PendingIntent pendingIntent;
+
     private Intent intent;
-    private Intent intentForPending = new Intent();
-    public static final String URL_REQUEST ="URL";
-    public static final String PENDING_INTENT ="PI";
+
+    public static final String URL_REQUEST = "URL";
+    public static final String BROADCAST_ACTION="Message";
+    public static final String PARAM_TASK="task";
+    public final int TASK1 = 1;
+    BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +54,25 @@ public class MainActivity extends Activity {
         btnStop = (Button) findViewById(R.id.stop);
         btnVolumeDown = (Button) findViewById(R.id.volume_down);
         btnVolumeUp = (Button) findViewById(R.id.volume_up);
-        pendingIntent = createPendingResult(1, intentForPending, 0);
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int task = intent.getIntExtra(PARAM_TASK,0);
+                if (task ==1){
+                    status = Status.getInstance();
+                    Log.d(TAG,"OnReceive worked.....");
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
+
+        registerReceiver(broadcastReceiver,intentFilter);
+
         intent = new Intent(this, StatusService.class)
                 .putExtra(URL_REQUEST, "http://10.42.0.1:8080/requests/status.json")
-                .putExtra(PENDING_INTENT, pendingIntent);
+                .putExtra(PARAM_TASK,TASK1);
+
         requestQueue = Volley.newRequestQueue(this);
         startService(intent);
 
@@ -86,12 +107,12 @@ public class MainActivity extends Activity {
 
     public void playPause(View view) {
 
-        final String urlPlay = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_forceresume";
-        final String urlPause = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_forcepause";
+        final String urlPlay = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_play";
+        final String urlPause = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_pause";
 
         VlcRequest vlcRequest = null;
 
-        if (status.getState().equals("paused")) {
+        if (status.getState().equals("paused")|| status.getState().equals("stopped")) {
             vlcRequest = new VlcRequest(Request.Method.GET, urlPlay, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -144,7 +165,8 @@ public class MainActivity extends Activity {
         });
         vlcRequest.setUsernameAndPassword("", "123");
         requestQueue.add(vlcRequest);
-        stopService(new Intent(this, StatusService.class));
+
+
     }
 
     public void VolumeUp(View view) {
@@ -187,12 +209,24 @@ public class MainActivity extends Activity {
         requestQueue.add(vlcRequest);
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onResume() {
+        super.onResume();
+        startService(intent);
+        Log.d(TAG, "OnResume called....");
+    }
 
-        status = Status.getInstance();
-        Log.d(TAG, status.getArtist());
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this, StatusService.class));
+        Log.d(TAG, "OnPaused called....");
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 }
