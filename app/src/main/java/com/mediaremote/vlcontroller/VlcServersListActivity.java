@@ -81,7 +81,7 @@ public class VlcServersListActivity extends ListActivity {
             swipeRefreshLayout.setRefreshing(true);
 
             Log.d(TAG, "[!] >>> Start executing FindVlcServerAsyncTask");
-            new FindVlcServerAsyncTask().execute(dhcpInfo.ipAddress, dhcpInfo.netmask);
+            new FindVlcServerAsyncTask().execute(dhcpInfo.ipAddress);
             }
         });
         }
@@ -129,9 +129,8 @@ public class VlcServersListActivity extends ListActivity {
         @Override
         protected Void doInBackground(Integer ... params) {
             Integer ipAddress = params[0];
-            Integer netmask = params[1];
 
-            List<InetAddress> inetAddressList = NetUtils.getIpRangeFromMask(ipAddress, netmask);
+            List<InetAddress> inetAddressList = NetUtils.getIpRangeFromMask(ipAddress);
             Thread[] workers = new Thread[inetAddressList.size()];
 
             for (int i = 0; i < inetAddressList.size(); i++) {
