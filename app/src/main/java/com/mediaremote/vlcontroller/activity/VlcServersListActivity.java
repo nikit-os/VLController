@@ -1,6 +1,5 @@
-package com.mediaremote.vlcontroller;
+package com.mediaremote.vlcontroller.activity;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,15 +11,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import java.io.EOFException;
+import com.mediaremote.vlcontroller.R;
+import com.mediaremote.vlcontroller.fragment.SettingsActivityFragment;
+import com.mediaremote.vlcontroller.util.NetUtils;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;

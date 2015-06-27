@@ -1,4 +1,4 @@
-package com.mediaremote.vlcontroller;
+package com.mediaremote.vlcontroller.net;
 
 import android.util.Base64;
 

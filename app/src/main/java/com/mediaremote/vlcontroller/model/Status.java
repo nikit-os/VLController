@@ -1,4 +1,4 @@
-package com.mediaremote.vlcontroller;
+package com.mediaremote.vlcontroller.model;
 
 /**
  * Created by neon on 23.06.15.

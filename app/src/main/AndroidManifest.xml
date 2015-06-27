@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.PlayerControlActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,24 +21,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.PlayerControlActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mediaremote.vlcontroller.MainActivity" />
+                android:value=".activity.PlayerControlActivity" />
         </activity>
         <activity
-            android:name=".VlcServersListActivity"
+            android:name=".activity.VlcServersListActivity"
             android:label="@string/title_activity_vlc_servers_list"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.PlayerControlActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mediaremote.vlcontroller.MainActivity" />
+                android:value=".activity.PlayerControlActivity" />
         </activity>
         <service
-            android:name=".StatusService"
+            android:name=".service.StatusService"
             android:enabled="true"
             android:exported="true" >
         </service>

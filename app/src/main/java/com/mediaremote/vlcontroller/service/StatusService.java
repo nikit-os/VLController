@@ -1,6 +1,5 @@
-package com.mediaremote.vlcontroller;
+package com.mediaremote.vlcontroller.service;
 
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -11,6 +10,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.mediaremote.vlcontroller.net.VlcRequest;
+import com.mediaremote.vlcontroller.activity.PlayerControlActivity;
+import com.mediaremote.vlcontroller.model.Status;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,14 +54,14 @@ public class StatusService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
-        urlRequest = intent.getStringExtra(MainActivity.URL_REQUEST);
+        urlRequest = intent.getStringExtra(PlayerControlActivity.URL_REQUEST);
         statusUpdate();
         return super.onStartCommand(intent, flags, startId);
     }
 
     public void statusUpdate() {
-        final Intent intent = new Intent(MainActivity.BROADCAST_ACTION);
-        intent.putExtra(MainActivity.PARAM_TASK, 1);
+        final Intent intent = new Intent(PlayerControlActivity.BROADCAST_ACTION);
+        intent.putExtra(PlayerControlActivity.PARAM_TASK, 1);
 
         final VlcRequest vlcRequest = new VlcRequest(Request.Method.GET, urlRequest, null, new Response.Listener<JSONObject>() {
             @Override

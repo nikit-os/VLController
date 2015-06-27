@@ -1,7 +1,6 @@
-package com.mediaremote.vlcontroller;
+package com.mediaremote.vlcontroller.activity;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,19 +12,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.mediaremote.vlcontroller.R;
+import com.mediaremote.vlcontroller.model.Status;
+import com.mediaremote.vlcontroller.service.StatusService;
+import com.mediaremote.vlcontroller.net.VlcRequest;
 
 import org.json.JSONObject;
 
 
-public class MainActivity extends Activity {
-    private static final String TAG = MainActivity.class.toString();
+public class PlayerControlActivity extends Activity {
+    private static final String TAG = PlayerControlActivity.class.toString();
 
     public final static String IP_ADDRESS = "10.42.0.1";
     public final static String PORT = "8080";

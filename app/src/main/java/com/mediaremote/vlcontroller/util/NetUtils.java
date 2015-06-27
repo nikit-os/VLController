@@ -1,6 +1,4 @@
-package com.mediaremote.vlcontroller;
-
-import android.util.Log;
+package com.mediaremote.vlcontroller.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
