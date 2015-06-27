@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -30,18 +31,19 @@ public class MainActivity extends Activity {
     public final static String PORT = "8080";
 
     private RequestQueue requestQueue;
-    private TextView textView;
     private Button btnPlayPause;
     private Button btnStop;
     private Button btnVolumeUp;
     private Button btnVolumeDown;
+    private Button btnPrev;
+    private Button btnNext;
     private Status status;
 
     private Intent intent;
 
     public static final String URL_REQUEST = "URL";
-    public static final String BROADCAST_ACTION="Message";
-    public static final String PARAM_TASK="task";
+    public static final String BROADCAST_ACTION = "Message";
+    public static final String PARAM_TASK = "task";
     public final int TASK1 = 1;
     BroadcastReceiver broadcastReceiver;
 
@@ -49,29 +51,29 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.display_state);
         btnPlayPause = (Button) findViewById(R.id.play_pause);
         btnStop = (Button) findViewById(R.id.stop);
         btnVolumeDown = (Button) findViewById(R.id.volume_down);
         btnVolumeUp = (Button) findViewById(R.id.volume_up);
-
-        broadcastReceiver = new BroadcastReceiver() {
+        btnPrev = (Button) findViewById(R.id.previous);
+        btnNext = (Button) findViewById(R.id.next);
+        status = Status.getInstance();     broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int task = intent.getIntExtra(PARAM_TASK,0);
-                if (task ==1){
-                    status = Status.getInstance();
-                    Log.d(TAG,"OnReceive worked.....");
-                }
+                int task = intent.getIntExtra(PARAM_TASK, 0);
+
+                updateView();
+                Log.d(TAG, "OnReceive worked.....");
+
             }
         };
         IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
 
-        registerReceiver(broadcastReceiver,intentFilter);
+        registerReceiver(broadcastReceiver, intentFilter);
 
         intent = new Intent(this, StatusService.class)
                 .putExtra(URL_REQUEST, "http://10.42.0.1:8080/requests/status.json")
-                .putExtra(PARAM_TASK,TASK1);
+                .putExtra(PARAM_TASK, TASK1);
 
         requestQueue = Volley.newRequestQueue(this);
         startService(intent);
@@ -112,7 +114,7 @@ public class MainActivity extends Activity {
 
         VlcRequest vlcRequest = null;
 
-        if (status.getState().equals("paused")|| status.getState().equals("stopped")) {
+        if (status.getState().equals("paused") || status.getState().equals("stopped")) {
             vlcRequest = new VlcRequest(Request.Method.GET, urlPlay, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -125,7 +127,7 @@ public class MainActivity extends Activity {
 
                 }
             });
-            vlcRequest.setUsernameAndPassword("", "123");
+
 
         } else if (status.getState().equals("playing")) {
             vlcRequest = new VlcRequest(Request.Method.GET, urlPause, null, new Response.Listener<JSONObject>() {
@@ -139,15 +141,15 @@ public class MainActivity extends Activity {
 
                 }
             });
-            vlcRequest.setUsernameAndPassword("", "123");
+
         }
 
-
+        vlcRequest.setUsernameAndPassword("", "123");
         requestQueue.add(vlcRequest);
 
     }
 
-    public void Stop(View view) {
+    public void stop(View view) {
         final String urlStop = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_stop";
 
         VlcRequest vlcRequest = null;
@@ -169,7 +171,7 @@ public class MainActivity extends Activity {
 
     }
 
-    public void VolumeUp(View view) {
+    public void volumeUp(View view) {
         final String volumeUpURL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=volume&val=+5";
 
         VlcRequest vlcRequest = null;
@@ -189,7 +191,7 @@ public class MainActivity extends Activity {
         requestQueue.add(vlcRequest);
     }
 
-    public void VolumeDown(View view) {
+    public void volumeDown(View view) {
         final String volumeDownURL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=volume&val=-5";
 
         VlcRequest vlcRequest = null;
@@ -209,6 +211,57 @@ public class MainActivity extends Activity {
         requestQueue.add(vlcRequest);
     }
 
+    public void nextItem(View view) {
+        Log.d(TAG, "" + status.getTrack_total());
+        Log.d(TAG, "" + status.getTrack_number());
+        if (status.getTrack_number() < status.getTrack_total()) {
+            final String nextURL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_next";
+
+            VlcRequest vlcRequest = null;
+            vlcRequest = new VlcRequest(Request.Method.GET, nextURL, null, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+
+            vlcRequest.setUsernameAndPassword("", "123");
+            requestQueue.add(vlcRequest);
+        }
+    }
+
+
+    public void prevItem(View view) {
+
+        if (status.getTrack_number() > 1) {
+
+            final String prevURL = "http://" + IP_ADDRESS + ":" + PORT + "/requests/status.json?command=pl_previous";
+
+            VlcRequest vlcRequest = null;
+            vlcRequest = new VlcRequest(Request.Method.GET, prevURL, null, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+
+            vlcRequest.setUsernameAndPassword("", "123");
+            requestQueue.add(vlcRequest);
+
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -228,5 +281,16 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+    }
+
+    public void updateView() {
+        String state = status.getState();
+        if (state.equals("paused") || state.equals("stopped")) {
+            Drawable image = getResources().getDrawable(R.drawable.play);
+            btnPlayPause.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+        } else {
+            Drawable image = getResources().getDrawable(R.drawable.pause);
+            btnPlayPause.setCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+        }
     }
 }

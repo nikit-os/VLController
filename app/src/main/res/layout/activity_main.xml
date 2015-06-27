@@ -1,45 +1,87 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:orientation="vertical">
+    tools:context=".MainActivity">
 
-    <TextView android:text="@string/hello_world"
-        android:id="@+id/display_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/previous"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_button"
+            android:drawableLeft="@drawable/skip_previous"
+            android:onClick="prevItem"
+            android:paddingLeft="17dp" />
+
+        <Button
+            android:id="@+id/play_pause"
+            android:layout_width="80dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_button"
+            android:drawableLeft="@drawable/play"
+            android:onClick="playPause"
+            android:paddingLeft="28dp" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/oval_button"
+            android:drawableLeft="@drawable/stop"
+            android:paddingLeft="17dp"
+            android:onClick="stop"
+            />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/oval_button"
+            android:drawableLeft="@drawable/skip_next"
+            android:onClick="nextItem"
+            android:paddingLeft="17dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        >
-    <Button
-        android:id="@+id/play_pause"
-        android:text="Play"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:onClick="playPause"/>
-    <Button
-        android:id="@+id/stop"
-        android:text="stop"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:onClick="Stop"/>
-    <Button
-        android:id="@+id/volume_up"
-        android:text="+"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:onClick="VolumeUp"/>
-    <Button
-        android:id="@+id/volume_down"
-        android:text="-"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:onClick="VolumeDown"/>
+        android:padding="20dp">
+
+        <Button
+            android:id="@+id/volume_up"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_button"
+            android:onClick="volumeUp"
+            android:text="+" />
+
+        <Button
+            android:id="@+id/volume_down"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/oval_button"
+            android:onClick="volumeDown"
+            android:text="-" />
+
     </LinearLayout>
 </LinearLayout>

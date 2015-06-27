@@ -72,7 +72,8 @@ public class StatusService extends Service {
                     status.setLength(response.getInt("length"));
                     status.setArtist(response.getJSONObject("information").getJSONObject("category").getJSONObject("meta").getString("artist"));
                     status.setFilename(response.getJSONObject("information").getJSONObject("category").getJSONObject("meta").getString("filename"));
-
+                    status.setTrack_number(response.getJSONObject("information").getJSONObject("category").getJSONObject("meta").getInt("track_number"));
+                    status.setTrack_total(response.getJSONObject("information").getJSONObject("category").getJSONObject("meta").getInt("track_total"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -93,7 +94,7 @@ public class StatusService extends Service {
                     requestQueue.add(vlcRequest);
                     sendBroadcast(intent);
                     try {
-                        TimeUnit.SECONDS.sleep(1);
+                        TimeUnit.MILLISECONDS.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
