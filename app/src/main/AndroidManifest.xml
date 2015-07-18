@@ -27,11 +27,11 @@
         <activity
             android:name=".activity.VlcServersListActivity"
             android:label="@string/title_activity_vlc_servers_list"
-            android:parentActivityName=".activity.PlayerControlActivity"
             android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.PlayerControlActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service
@@ -43,11 +43,7 @@
         <activity
             android:name=".activity.FavoritesActivity"
             android:label="@string/title_activity_favorites" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

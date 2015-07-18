@@ -36,10 +36,10 @@ public class VlcServersDataSource {
         dbHelper.close();
     }
 
-    public void saveVlcServer(VlcServer vlcServer) {
+    public boolean saveVlcServer(VlcServer vlcServer) {
         if (isServerExistsInDb(vlcServer.getUri().getHost(), vlcServer.getUri().getPort())) {
             Log.i(TAG, "VlcServer with URI = " + vlcServer.getUri() + " already exist");
-            return;
+            return false;
         }
 
         ContentValues values = new ContentValues();
@@ -48,11 +48,17 @@ public class VlcServersDataSource {
         values.put(DatabaseHelper.COLUMN_URI, vlcServer.getUri().toString());
 
         database.insert(DatabaseHelper.TABLE_NAME, null, values);
+
+        return true;
     }
 
     public boolean isServerExistsInDb(String ipAddress, int port) {
         Uri serverUri = Uri.parse("http://" + ipAddress + ":" + String.valueOf(port));
         return getVlcServerByURI(serverUri) != null;
+    }
+
+    public boolean isServerExistsInDb(VlcServer server) {
+        return isServerExistsInDb(server.getUri().getHost(), server.getUri().getPort());
     }
 
     private VlcServer getVlcServerByURI(Uri uri) {
