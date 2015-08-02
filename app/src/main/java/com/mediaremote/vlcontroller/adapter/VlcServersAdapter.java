@@ -128,7 +128,7 @@ public class VlcServersAdapter extends RecyclerView.Adapter<VlcServersAdapter.Vi
     }
 
     public void clear() {
-        vlcServerList.clear();
+        removeRange(0, vlcServerList.size());
     }
 
     public VlcServer get(int index) {
