@@ -24,43 +24,52 @@ import com.mediaremote.vlcontroller.fragment.FavoritesFragment;
 import com.mediaremote.vlcontroller.fragment.SettingsActivityFragment;
 import com.mediaremote.vlcontroller.model.VlcServer;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.ViewById;
 
+@EActivity(R.layout.activity_vlc_servers_list)
 public class VlcServersListActivity extends AppCompatActivity implements AddNewServerDialog.AddNewServerDialogListener {
     public static final String TAG = VlcServersListActivity.class.toString();
 
-    private ViewPager pager;
+    @ViewById(R.id.pager)
+    ViewPager pager;
+
+    @ViewById(R.id.sliding_tabs)
+    TabLayout tabLayout;
+
+    @ViewById(R.id.toolbar)
+    Toolbar toolbar;
+
     private FavoritesFragment favoritesFragment;
+
     private AutoFindServersFragment autoFindServersFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vlc_servers_list);
+    }
+
+    @AfterViews
+    protected void init() {
         setupToolbar();
 
         favoritesFragment = new FavoritesFragment();
         autoFindServersFragment = new AutoFindServersFragment();
 
-        pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new VlcServersPagerAdapter(getSupportFragmentManager()));
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(pager);
     }
 
     private void setupToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.mipmap.ic_launcher);
-        ab.setDisplayHomeAsUpEnabled(true);
+        toolbar.setLogo(R.mipmap.ic_launcher);
     }
-
-
 
     public void openAddServerDialog(View view) {
         AddNewServerDialog dialog = new AddNewServerDialog();
-        dialog.show(getFragmentManager(), "NoticeDialogFragment");
+        dialog.show(getFragmentManager(), "AddNewServerDialog");
     }
 
     @Override
@@ -85,7 +94,7 @@ public class VlcServersListActivity extends AppCompatActivity implements AddNewS
                     return autoFindServersFragment;
                 }
                 default:
-                    return null;
+                    return favoritesFragment;
             }
         }
 

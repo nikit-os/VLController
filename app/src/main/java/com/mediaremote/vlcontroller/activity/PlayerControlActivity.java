@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.mediaremote.vlcontroller.R;
+import com.mediaremote.vlcontroller.fragment.FavoritesFragment;
 import com.mediaremote.vlcontroller.model.Status;
 import com.mediaremote.vlcontroller.service.StatusService;
 import com.mediaremote.vlcontroller.net.VlcRequest;
@@ -54,7 +55,7 @@ public class PlayerControlActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String ipAndPort = getIntent().getStringExtra(FavoritesActivity.SERVER_DATA_URI);
+        String ipAndPort = getIntent().getStringExtra(FavoritesFragment.SERVER_DATA_URI);
         IP_ADDRESS = ipAndPort.split(":")[0];
         PORT = ipAndPort.split(":")[1];
 

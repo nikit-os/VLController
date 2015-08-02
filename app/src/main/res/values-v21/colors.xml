@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#EF6C00</color>
     <color name="mainBackground">#212121</color>
     <color name="colorAccent">#FF9800</color>
+    <color name="cardBackground">#424242</color>
+    <color name="selected_overlay">#50ffa83b</color>
 </resources>

@@ -25,7 +25,7 @@
                 android:value=".activity.PlayerControlActivity" />
         </activity>
         <activity
-            android:name=".activity.VlcServersListActivity"
+            android:name=".activity.VlcServersListActivity_"
             android:label="@string/title_activity_vlc_servers_list"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -40,11 +40,6 @@
             android:exported="true" >
         </service>
 
-        <activity
-            android:name=".activity.FavoritesActivity"
-            android:label="@string/title_activity_favorites" >
-
-        </activity>
     </application>
 
 </manifest>

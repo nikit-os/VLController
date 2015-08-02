@@ -19,8 +19,8 @@ public class VlcServer {
         this.uri = Uri.parse("http://" + ipAddress + ":" + String.valueOf(port));
     }
 
-    public VlcServer(String serverName, String password, String ipAddress) {
-        this(serverName, password, ipAddress, DEFAULT_PORT);
+    public VlcServer(String serverName, String ipAddress) {
+        this(serverName, "fake_password", ipAddress, DEFAULT_PORT);
     }
 
     public VlcServer() {

@@ -46,7 +46,6 @@ public class AutoFindServersFragment extends Fragment {
     private RecyclerView autoFindServersRecyclerView;
     private VlcServersAdapter autoFindServersAdapter;
     private RecyclerView.LayoutManager autoFindServersLayoutManager;
-    //private OnItemClickListener listener;
     private SwipeRefreshLayout swipeRefreshLayout;
     private static int port;
 
@@ -57,16 +56,11 @@ public class AutoFindServersFragment extends Fragment {
                 return false;
 
             String ipAddress = (String) msg.obj;
-            autoFindServersAdapter.add(new VlcServer(ipAddress, "123", ipAddress, port));
+            autoFindServersAdapter.add(new VlcServer(ipAddress, ipAddress));
 
             return true;
         }
     });
-
-    public interface OnItemClickListener {
-        void onItemClick(VlcServer server);
-
-    }
 
     @Nullable
     @Override
@@ -90,16 +84,17 @@ public class AutoFindServersFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 VlcServer selectedServer = autoFindServersAdapter.get(position);
-                if (!datasource.isServerExistsInDb(selectedServer)) {
+                if (datasource.isServerExistsInDb(selectedServer)) {
                     Toast.makeText(getActivity(), R.string.server_already_exist, Toast.LENGTH_SHORT).show();
                 } else {
-
+                    AddNewServerDialog dialog = AddNewServerDialog.newInstance(selectedServer.getIpAndPort());
+                    dialog.show(getActivity().getFragmentManager(), "NoticeDialogFragment");
                 }
             }
 
             @Override
-            public void onLongItemClick(View view) {
-
+            public boolean onLongItemClick(View view, int position) {
+                return true;
             }
         });
         autoFindServersRecyclerView.setAdapter(autoFindServersAdapter);
@@ -132,17 +127,6 @@ public class AutoFindServersFragment extends Fragment {
         datasource.close();
         super.onPause();
     }
-
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        try {
-//            listener = (OnItemClickListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement AutoFindServersFragment.OnItemClickListener");
-//        }
-//    }
 
     public void clearAdapter() {
         autoFindServersAdapter.clear();
