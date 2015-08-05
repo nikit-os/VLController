@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by nikita on 28/06/15.
@@ -133,12 +134,14 @@ public class AutoFindServersFragment extends Fragment {
     }
 
     public class CheckServerAvailable implements Runnable {
-        InetAddress address;
-        int port;
+        private InetAddress address;
+        private int port;
+        private CountDownLatch countDownLatch;
 
-        public CheckServerAvailable(InetAddress address, int port) {
+        public CheckServerAvailable(CountDownLatch countDownLatch, InetAddress address, int port) {
             this.address = address;
             this.port = port;
+            this.countDownLatch = countDownLatch;
         }
 
         @Override
@@ -159,6 +162,7 @@ public class AutoFindServersFragment extends Fragment {
                     }
                 } finally {
                     connection.disconnect();
+                    countDownLatch.countDown();
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -177,9 +181,10 @@ public class AutoFindServersFragment extends Fragment {
 
             List<InetAddress> inetAddressList = NetUtils.getIpRangeFromMask(ipAddress);
             Thread[] workers = new Thread[inetAddressList.size()];
+            CountDownLatch latch = new CountDownLatch(inetAddressList.size());
 
             for (int i = 0; i < inetAddressList.size(); i++) {
-                workers[i] = new Thread(new CheckServerAvailable(inetAddressList.get(i), port));
+                workers[i] = new Thread(new CheckServerAvailable(latch, inetAddressList.get(i), port));
                 workers[i].setPriority(Thread.MIN_PRIORITY);
             }
 
@@ -188,11 +193,9 @@ public class AutoFindServersFragment extends Fragment {
             }
 
             try {
-                for (Thread work : workers) {
-                    work.join();
-                }
+                latch.await();
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                e.printStackTrace();
             }
 
             return null;
